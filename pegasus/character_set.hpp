@@ -5,7 +5,6 @@
 
 #include "character.hpp"
 #include "ordered_choice.hpp"
-#include "nothing.hpp"
 
 namespace pegasus {
     template <std::size_t size>
@@ -14,8 +13,8 @@ namespace pegasus {
     }
 
     template <>
-    inline constexpr auto character_set_impl<0>(char32_t const*) {
-        return nil;
+    inline constexpr auto character_set_impl<1>(char32_t const*) {
+        return ch(*value);
     }
 
     template <std::size_t size>
