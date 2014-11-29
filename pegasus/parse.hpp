@@ -1,6 +1,9 @@
 #ifndef PEGASUS_HEADER_PARSE
 #define PEGASUS_HEADER_PARSE
 
+#include "list.hpp"
+#include "state.hpp"
+
 namespace pegasus {
     namespace parse_impl {
         inline void get_result(list_node_ptr<>) {}

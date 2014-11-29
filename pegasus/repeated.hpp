@@ -3,12 +3,21 @@
 
 #include <utility>
 
+#include "basic_parser.hpp"
 #include "failure.hpp"
 
 namespace pegasus {
     template <typename Parser>
-    struct repeated {
-        Parser parser;
+    struct repeated
+        : basic_parser
+    {
+        template <typename ParserArg>
+        explicit constexpr repeated(ParserArg&& parser_arg)
+            : parser(std::forward<ParserArg>(parser_arg))
+        {}
+
+        repeated(repeated const&) = default;
+        repeated(repeated&&) = default;
 
         template <typename State>
         auto parse(State&& state) const {
@@ -21,11 +30,14 @@ namespace pegasus {
                 }
             }
         }
+
+    private:
+        Parser parser;
     };
 
-    template <typename Parser>
+    template <typename Parser, enable_if_parsers<Parser>...>
     inline constexpr auto operator*(Parser&& parser) {
-        return repeated<Parser>{std::forward<Parser>(parser)};
+        return repeated<Parser>(std::forward<Parser>(parser));
     }
 }
 

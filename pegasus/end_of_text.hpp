@@ -3,10 +3,13 @@
 
 #include <utility>
 
+#include "basic_parser.hpp"
 #include "failure.hpp"
 
 namespace pegasus {
-    struct end_of_text {
+    struct end_of_text
+        : basic_parser
+    {
         template <typename State>
         auto parse(State&& state) const {
             if (!state.cursor) {
@@ -16,7 +19,7 @@ namespace pegasus {
         }
     };
 
-    static constexpr auto eot = end_of_text{};
+    static constexpr auto eot = end_of_text();
 }
 
 #endif

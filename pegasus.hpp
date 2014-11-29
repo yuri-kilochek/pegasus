@@ -1,6 +1,9 @@
 #ifndef PEGASUS_HEADER
 #define PEGASUS_HEADER
 
+#include "pegasus/basic_parser.hpp"
+#include "pegasus/parse.hpp"
+
 #include "pegasus/character.hpp"
 #include "pegasus/any_character.hpp"
 #include "pegasus/character_range.hpp"
@@ -29,6 +32,6 @@
 #include "pegasus/state.hpp"
 #include "pegasus/list.hpp"
 #include "pegasus/iterator_cursor.hpp"
-#include "pegasus/parse.hpp"
+#include "pegasus/utf8.hpp"
 
 #endif

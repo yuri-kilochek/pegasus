@@ -4,6 +4,7 @@
 #include <memory>
 #include <utility>
 
+#include "basic_parser.hpp"
 #include "list.hpp"
 #include "state.hpp"
 #include "impl/reverse_targs.hpp"
@@ -91,19 +92,30 @@ namespace pegasus {
     }
 
     template <typename Callable>
-    struct stack_action {
-        Callable callable;
+    struct stack_action
+        : basic_parser
+    {
+        template <typename CallableArg>
+        explicit constexpr stack_action(CallableArg&& callable_arg)
+            : callable(std::forward<CallableArg>(callable_arg))
+        {}
+
+        stack_action(stack_action const&) = default;
+        stack_action(stack_action&&) = default;
 
         template <typename State>
         auto parse(State&& state) const {
             using applicator = decltype(stack_action_impl::dispatch(&Callable::operator()));
             return make_state(applicator::apply(std::move(state.values), callable), std::move(state.cursor));
         }
+
+    private:
+        Callable callable;
     };
 
     template <typename Callable>
     inline constexpr auto act(Callable&& callable) {
-        return stack_action<Callable>{std::forward<Callable>(callable)};
+        return stack_action<Callable>(std::forward<Callable>(callable));
     }
 }
 
