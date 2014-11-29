@@ -13,7 +13,7 @@ namespace pegasus {
     }
 
     template <>
-    inline constexpr auto character_set_impl<1>(char32_t const*) {
+    inline constexpr auto character_set_impl<1>(char32_t const* value) {
         return ch(*value);
     }
 
