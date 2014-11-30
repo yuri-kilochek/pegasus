@@ -3,14 +3,17 @@
 
 #include <cstddef>
 
-#include "character.hpp"
 #include "sequence.hpp"
+#include "character.hpp"
+#include "stack_action.hpp"
 #include "empty_string.hpp"
 
 namespace pegasus {
     template <std::size_t size>
     inline constexpr auto string_impl(char32_t const* value) {
-        return ch(*value) >> string_impl<size - 1>(value + 1);
+        return string_impl<size - 1>(value) >>
+               ch(value[size - 1]) >>
+               act([](edit<std::u32string> s, take<char32_t> c){ *s += *c; });
     }
 
     template <>

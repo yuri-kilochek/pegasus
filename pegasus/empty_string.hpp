@@ -1,21 +1,12 @@
 #ifndef PEGASUS_HEADER_EMPTY_STRING
 #define PEGASUS_HEADER_EMPTY_STRING
 
-#include <utility>
+#include <string>
 
-#include "basic_parser.hpp"
+#include "stack_action.hpp"
 
 namespace pegasus {
-    struct empty_string
-        : basic_parser
-    {
-        template <typename State>
-        auto parse(State&& state) const {
-            return std::move(state);
-        }
-    };
-
-    static constexpr auto estr = empty_string();
+    static constexpr auto estr = act([](put<std::u32string> s){ *s = U""; });
 }
 
 #endif

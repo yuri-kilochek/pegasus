@@ -48,6 +48,7 @@ namespace pegasus {
         utf8_decoding_iterator& operator++() {
             ensure_consumed();
             begin = end;
+            value = -1;
             return *this;
         }
 
@@ -75,33 +76,33 @@ namespace pegasus {
     private:
         InputIterator begin;
         mutable InputIterator end;
-        mutable value_type value;
+        mutable value_type value = -1;
 
         void ensure_consumed() const {
-            if (end == begin) {
+            if (value == -1) {
                 std::size_t trail_size;
 
-                if ((*end & 0b10000000) == 0b00000000) {
-                    value = *end++ & 0b01111111;
+                if (((unsigned char)*end & 0b10000000) == 0b00000000) {
+                    value = (unsigned char)*end++ & 0b01111111;
                     trail_size = 0;
-                } else if ((*end & 0b11100000) == 0b11000000) {
-                    value = *end++ & 0b00011111;
+                } else if (((unsigned char)*end & 0b11100000) == 0b11000000) {
+                    value = (unsigned char)*end++ & 0b00011111;
                     trail_size = 1;
-                } else if ((*end & 0b11110000) == 0b11100000) {
-                    value = *end++ & 0b00001111;
+                } else if (((unsigned char)*end & 0b11110000) == 0b11100000) {
+                    value = (unsigned char)*end++ & 0b00001111;
                     trail_size = 2;
-                } else if ((*end & 0b11111000) == 0b11110000) {
-                    value = *end++ & 0b00000111;
+                } else if (((unsigned char)*end & 0b11111000) == 0b11110000) {
+                    value = (unsigned char)*end++ & 0b00000111;
                     trail_size = 3;
                 } else {
                     throw utf8_coding_error("Illegal utf8");
                 }
 
                 while (trail_size-- > 0) {
-                    if ((*end & 0b11000000) != 0b10000000) {
+                    if (((unsigned char)*end & 0b11000000) != 0b10000000) {
                         throw utf8_coding_error("Illegal utf8");
                     }
-                    value = (value << 6) | *end++ & 0b00111111;
+                    value = (value << 6) | (unsigned char)*end++ & 0b00111111;
                 }
             }
         }
@@ -143,7 +144,7 @@ namespace pegasus {
 
         struct post_incremented_proxy {
             post_incremented_proxy(utf8_encoding_iterator& decoder)
-                    : encoder(encoder)
+                : encoder(encoder)
             {}
 
             ~post_incremented_proxy() {

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <utility>
+#include <type_traits>
 
 #include "basic_parser.hpp"
 #include "list.hpp"
@@ -105,7 +106,8 @@ namespace pegasus {
 
         template <typename State>
         auto parse(State&& state) const {
-            using applicator = decltype(stack_action_impl::dispatch(&Callable::operator()));
+            using callable_type = typename std::remove_reference<Callable>::type;
+            using applicator = decltype(stack_action_impl::dispatch(&callable_type::operator()));
             return make_state(applicator::apply(std::move(state.values), callable), std::move(state.cursor));
         }
 

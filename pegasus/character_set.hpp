@@ -3,7 +3,7 @@
 
 #include <cstddef>
 
-#include "character.hpp"
+#include "character_range.hpp"
 #include "ordered_choice.hpp"
 
 namespace pegasus {
